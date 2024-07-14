@@ -37,8 +37,6 @@ function App() {
       }
     }
     const secondSet = Math.floor(Math.random() * 2) + 1;
-    console.log("secondSet", secondSet);
-    console.log("firstSet", firstSet);
     return { firstSet, secondSet };
   };
 
@@ -46,8 +44,6 @@ function App() {
     const firstMatchCount = selected.firstField.filter((num) =>
       generated.firstSet.includes(num)
     ).length;
-    console.log("firstSelectedCount", selected);
-    console.log("secondSelectedCount", selected.secondField);
 
     const secondMatch = selected.secondField === generated.secondSet;
 
@@ -62,14 +58,13 @@ function App() {
       firstField: firstField
         .map((selected, index) => (selected ? index + 1 : null))
         .filter((num) => num !== null),
-      secondField: secondField[0] ? 1 : 2,
+      secondField: secondField.findIndex((selected) => selected) + 1,
     };
-    console.log("secondField", secondField);
-    console.log("firstField", firstField);
-
+    console.log("firstField", selectedNumbers.firstField);
+    console.log("secondField", selectedNumbers.secondField);
     if (
       selectedNumbers.firstField.length < 8 ||
-      selectedNumbers.secondField.length < 1
+      selectedNumbers.secondField < 1
     ) {
       alert(
         "Please select 8 numbers in the first field and 1 number in the second field."
@@ -113,8 +108,11 @@ function App() {
 
   return (
     <div className={styles.app}>
-      {/* <h1>Gosloto "8 из 19"</h1> */}
       <div className={styles.field}>
+        <div className={styles.titleContainer}>
+          <h3>Поле 1</h3>
+          <span>Отметьте 8 чисел</span>
+        </div>
         {firstField.map((selected, index) => (
           <button
             key={index}
@@ -126,6 +124,11 @@ function App() {
         ))}
       </div>
       <div className={styles.field}>
+        <div className={styles.titleContainer}>
+          <h3>Поле 2</h3>
+          <span>Отметьте 1 число</span>
+        </div>
+
         {secondField.map((selected, index) => (
           <button
             key={index}
@@ -136,7 +139,9 @@ function App() {
           </button>
         ))}
       </div>
-      <button onClick={handleShowResult}>Показать результат</button>
+      <button onClick={handleShowResult} className={styles.resultButton}>
+        Показать результат
+      </button>
       {result && <p>{result}</p>}
       {error && <p className={styles.error}>{error}</p>}
     </div>
