@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styles from "./App.module.scss";
+import MockAdapter from "axios-mock-adapter";
+
+const mock = new MockAdapter(axios);
+
+mock.onPost("https://example.com/api/lottery").reply(200);
 
 function App() {
   const [firstField, setFirstField] = useState(new Array(19).fill(false));
@@ -37,11 +42,17 @@ function App() {
     return { firstSet, secondSet };
   };
 
-  const checkResult = (selected, generated) => {
+  const checkResult = (generated, selected) => {
     const firstMatchCount = selected.firstField.filter((num) =>
       generated.firstSet.includes(num)
     ).length;
-    const secondMatch = selected.secondField[0] === generated.secondSet;
+    console.log("firstSelectedCount", selected);
+    console.log("secondSelectedCount", selected.secondField);
+
+    const secondMatch = selected.secondField === generated.secondSet;
+
+    console.log("firstMatchCount", firstMatchCount);
+    console.log("secondMatch", secondMatch);
 
     return firstMatchCount >= 4 || (firstMatchCount >= 3 && secondMatch);
   };
@@ -53,21 +64,24 @@ function App() {
         .filter((num) => num !== null),
       secondField: secondField[0] ? 1 : 2,
     };
-    console.log("selectedNumbers", selectedNumbers);
+    console.log("secondField", secondField);
+    console.log("firstField", firstField);
 
-    // if (
-    //   selectedNumbers.firstField.length !== 8 ||
-    //   selectedNumbers.secondField.length !== 1
-    // ) {
-    //   alert(
-    //     "Please select 8 numbers in the first field and 1 number in the second field."
-    //   );
-    //   return;
-    // }
+    if (
+      selectedNumbers.firstField.length < 8 ||
+      selectedNumbers.secondField.length < 1
+    ) {
+      alert(
+        "Please select 8 numbers in the first field and 1 number in the second field."
+      );
+      return;
+    }
 
     const generatedNumbers = getRandomNumbers();
 
-    const isTicketWon = checkResult(selectedNumbers, generatedNumbers);
+    const isTicketWon = checkResult(generatedNumbers, selectedNumbers);
+
+    console.log("isTicketWon", isTicketWon);
 
     try {
       let attempts = 0;
