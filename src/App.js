@@ -10,8 +10,11 @@ function App() {
 
   const handleFirstFieldClick = (index) => {
     const newField = [...firstField];
-    newField[index] = !newField[index];
-    setFirstField(newField);
+    const selectedCount = newField.filter((selected) => selected).length;
+    if (newField[index] || selectedCount < 8) {
+      newField[index] = !newField[index];
+      setFirstField(newField);
+    }
   };
 
   const handleSecondFieldClick = (index) => {
@@ -29,6 +32,8 @@ function App() {
       }
     }
     const secondSet = Math.floor(Math.random() * 2) + 1;
+    console.log("secondSet", secondSet);
+    console.log("firstSet", firstSet);
     return { firstSet, secondSet };
   };
 
@@ -48,16 +53,17 @@ function App() {
         .filter((num) => num !== null),
       secondField: secondField[0] ? 1 : 2,
     };
+    console.log("selectedNumbers", selectedNumbers);
 
-    if (
-      selectedNumbers.firstField.length !== 8 ||
-      selectedNumbers.secondField.length !== 1
-    ) {
-      alert(
-        "Please select 8 numbers in the first field and 1 number in the second field."
-      );
-      return;
-    }
+    // if (
+    //   selectedNumbers.firstField.length !== 8 ||
+    //   selectedNumbers.secondField.length !== 1
+    // ) {
+    //   alert(
+    //     "Please select 8 numbers in the first field and 1 number in the second field."
+    //   );
+    //   return;
+    // }
 
     const generatedNumbers = getRandomNumbers();
 
