@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import axios from "axios";
 import styles from "./App.module.scss";
 import MockAdapter from "axios-mock-adapter";
-import { RxMagicWand } from "react-icons/rx";
 import { checkResult } from "./services/checkResult";
 import { getRandomNumbers } from "./services/getRandomNumbers";
-import Field from "./components/Field/Field";
+import MainPage from "./Pages/MainPage/MainPage";
+import ResultPage from "./Pages/ResultPage/ResultPage";
 
 const mock = new MockAdapter(axios);
 
 mock.onPost("https://example.com/api/lottery").reply(200);
 
-function App() {
+const App = () => {
   const [firstField, setFirstField] = useState(new Array(19).fill(false));
   const [secondField, setSecondField] = useState([false, false]);
   const [result, setResult] = useState(null);
@@ -50,8 +50,6 @@ function App() {
         .filter((num) => num !== null),
       secondField: secondField.findIndex((selected) => selected) + 1,
     };
-    console.log("firstField", selectedNumbers.firstField);
-    console.log("secondField", selectedNumbers.secondField);
     if (
       selectedNumbers.firstField.length < 8 ||
       selectedNumbers.secondField < 1
@@ -65,8 +63,6 @@ function App() {
     const generatedNumbers = getRandomNumbers();
 
     const isTicketWon = checkResult(generatedNumbers, selectedNumbers);
-
-    console.log("isTicketWon", isTicketWon);
 
     try {
       let attempts = 0;
@@ -96,30 +92,29 @@ function App() {
     }
   };
 
+  const tryAgain = () => {
+    setResult(null);
+    setFirstField(new Array(19).fill(false));
+    setSecondField([false, false]);
+  };
+
   return (
     <div className={styles.app}>
-      <div className={styles.wand} onClick={chooseRandomNumbers}>
-        <RxMagicWand size={30} />
-      </div>
-      <Field
-        numbers={firstField}
-        onClick={handleFirstFieldClick}
-        text="Отметьте 8 чисел"
-        isFirst={true}
-      />
-      <Field
-        numbers={secondField}
-        onClick={handleSecondFieldClick}
-        text="Отметьте 1 число"
-        isFirst={false}
-      />
-      <button onClick={handleShowResult} className={styles.resultButton}>
-        Показать результат
-      </button>
-      {result && <p>{result}</p>}
-      <p className={styles.error}>{error}</p>
+      {result ? (
+        <ResultPage result={result} tryAgain={tryAgain} />
+      ) : (
+        <MainPage
+          firstField={firstField}
+          secondField={secondField}
+          handleFirstFieldClick={handleFirstFieldClick}
+          handleSecondFieldClick={handleSecondFieldClick}
+          chooseRandomNumbers={chooseRandomNumbers}
+          handleShowResult={handleShowResult}
+          error={error}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default App;

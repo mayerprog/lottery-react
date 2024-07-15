@@ -1,0 +1,23 @@
+.resultButton {
+  border-radius: 20px;
+  color: #585858;
+  align-self: center;
+  padding: 0 15px;
+  border-width: 1px;
+  border-style: none;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
+  border-color: #ccc;
+  min-height: 60px;
+  font-size: 0.95rem;
+  &:hover {
+    background-color: darken(#fcfcfc, 2%);
+  }
+
+  &:active {
+    background-color: darken(#fcfcfc, 3%);
+  }
+  cursor: pointer;
+  @media (max-width: 480px) {
+    min-height: 40px;
+  }
+}
