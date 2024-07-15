@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import styles from "./App.module.scss";
 import MockAdapter from "axios-mock-adapter";
+import { RxMagicWand } from "react-icons/rx";
 
 const mock = new MockAdapter(axios);
 
@@ -108,6 +109,9 @@ function App() {
 
   return (
     <div className={styles.app}>
+      <div className={styles.wand}>
+        <RxMagicWand size={30} />
+      </div>
       <div className={styles.field}>
         <div className={styles.titleContainer}>
           <h3>Поле 1</h3>

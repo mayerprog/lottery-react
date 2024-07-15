@@ -11,7 +11,8 @@ body {
   text-align: center;
   font-family: "Montserrat", sans-serif;
   margin: 40px;
-  background-color: white;
+  padding: 30px 30px 50px 30px;
+  background-color: #fcfcfc;
   border-radius: 7px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   font-size: 15px;
@@ -86,8 +87,20 @@ button {
 button.selected {
   background-color: #ad6ab4;
   color: white;
+  &:hover {
+    background-color: darken(#ad6ab4, 2%);
+  }
+
+  &:active {
+    background-color: darken(#ad6ab4, 3%);
+  }
 }
 
 .error {
   color: red;
+}
+
+.wand {
+  align-self: flex-end;
+  cursor: pointer;
 }
