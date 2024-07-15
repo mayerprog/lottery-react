@@ -3,6 +3,9 @@ import axios from "axios";
 import styles from "./App.module.scss";
 import MockAdapter from "axios-mock-adapter";
 import { RxMagicWand } from "react-icons/rx";
+import { checkResult } from "./services/checkResult";
+import { getRandomNumbers } from "./services/getRandomNumbers";
+import Field from "./components/Field/Field";
 
 const mock = new MockAdapter(axios);
 
@@ -12,7 +15,9 @@ function App() {
   const [firstField, setFirstField] = useState(new Array(19).fill(false));
   const [secondField, setSecondField] = useState([false, false]);
   const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(
+    "Failed to get a valid response from the server"
+  );
 
   const handleFirstFieldClick = (index) => {
     const newField = [...firstField];
@@ -29,18 +34,6 @@ function App() {
     setSecondField(newField);
   };
 
-  const getRandomNumbers = () => {
-    const firstSet = [];
-    while (firstSet.length < 8) {
-      const num = Math.floor(Math.random() * 19) + 1;
-      if (!firstSet.includes(num)) {
-        firstSet.push(num);
-      }
-    }
-    const secondSet = Math.floor(Math.random() * 2) + 1;
-    return { firstSet, secondSet };
-  };
-
   const chooseRandomNumbers = () => {
     const randomNumbers = getRandomNumbers();
     const newFirstField = firstField.map((field, index) =>
@@ -50,19 +43,6 @@ function App() {
     newSecondField[randomNumbers.secondSet - 1] = true;
     setFirstField(newFirstField);
     setSecondField(newSecondField);
-  };
-
-  const checkResult = (generated, selected) => {
-    const firstMatchCount = selected.firstField.filter((num) =>
-      generated.firstSet.includes(num)
-    ).length;
-
-    const secondMatch = selected.secondField === generated.secondSet;
-
-    console.log("firstMatchCount", firstMatchCount);
-    console.log("secondMatch", secondMatch);
-
-    return firstMatchCount >= 4 || (firstMatchCount >= 3 && secondMatch);
   };
 
   const handleShowResult = async () => {
@@ -91,18 +71,30 @@ function App() {
     console.log("isTicketWon", isTicketWon);
 
     try {
-      const response = await axios.post("https://example.com/api/lottery", {
-        selectedNumber: selectedNumbers,
-        isTicketWon,
-      });
+      let attempts = 0;
+      let response;
+      while (attempts < 3) {
+        try {
+          response = await axios.post("https://example.com/api/lottery", {
+            selectedNumber: selectedNumbers,
+            isTicketWon,
+          });
+          break;
+        } catch (err) {
+          attempts++;
+          if (attempts < 3) {
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+          }
+        }
+      }
       if (response && response.status === 200) {
-        setResult(isTicketWon ? "You won!" : "You lost!");
+        setResult(isTicketWon ? "Вы выиграли!" : "Вы проиграли!");
         setError(null);
       } else {
-        setError("Failed to get a valid response from the server.");
+        setError("Не удалось получить корректный ответ от сервера.");
       }
     } catch (err) {
-      setError("Failed to send data to the server.");
+      setError("Не удалось отправить данные на сервер.");
     }
   };
 
@@ -111,42 +103,23 @@ function App() {
       <div className={styles.wand} onClick={chooseRandomNumbers}>
         <RxMagicWand size={30} />
       </div>
-      <div className={styles.field}>
-        <div className={styles.titleContainer}>
-          <h3>Поле 1</h3>
-          <span>Отметьте 8 чисел</span>
-        </div>
-        {firstField.map((selected, index) => (
-          <button
-            key={index}
-            className={selected ? styles.selected : ""}
-            onClick={() => handleFirstFieldClick(index)}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
-      <div className={styles.field}>
-        <div className={styles.titleContainer}>
-          <h3>Поле 2</h3>
-          <span>Отметьте 1 число</span>
-        </div>
-
-        {secondField.map((selected, index) => (
-          <button
-            key={index}
-            className={selected ? styles.selected : ""}
-            onClick={() => handleSecondFieldClick(index)}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
+      <Field
+        numbers={firstField}
+        onClick={handleFirstFieldClick}
+        text="Отметьте 8 чисел"
+        isFirst={true}
+      />
+      <Field
+        numbers={secondField}
+        onClick={handleSecondFieldClick}
+        text="Отметьте 1 число"
+        isFirst={false}
+      />
       <button onClick={handleShowResult} className={styles.resultButton}>
         Показать результат
       </button>
       {result && <p>{result}</p>}
-      {error && <p className={styles.error}>{error}</p>}
+      <p className={styles.error}>{error}</p>
     </div>
   );
 }

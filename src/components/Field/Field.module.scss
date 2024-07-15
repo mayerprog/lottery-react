@@ -1,0 +1,29 @@
+.field {
+  //   margin: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  h3 {
+    margin-right: 10px;
+  }
+}
+
+button.selected {
+  background-color: #ad6ab4;
+  color: white;
+  &:hover {
+    background-color: darken(#ad6ab4, 2%);
+  }
+
+  &:active {
+    background-color: darken(#ad6ab4, 3%);
+  }
+}
