@@ -55,7 +55,7 @@ const App = () => {
       selectedNumbers.secondField < 1
     ) {
       alert(
-        "Please select 8 numbers in the first field and 1 number in the second field."
+        "Пожалуйста, выберите 8 чисел в первом поле и 1 число во втором поле."
       );
       return;
     }
