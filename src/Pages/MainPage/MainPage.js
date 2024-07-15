@@ -1,14 +1,8 @@
 import React from "react";
-import axios from "axios";
 import styles from "./MainPage.module.scss";
-import MockAdapter from "axios-mock-adapter";
 import { RxMagicWand } from "react-icons/rx";
 import Field from "../../components/Field/Field";
 import Button from "../../components/Button/Button";
-
-const mock = new MockAdapter(axios);
-
-mock.onPost("https://example.com/api/lottery").reply(200);
 
 const MainPage = ({
   firstField,
