@@ -15,9 +15,7 @@ function App() {
   const [firstField, setFirstField] = useState(new Array(19).fill(false));
   const [secondField, setSecondField] = useState([false, false]);
   const [result, setResult] = useState(null);
-  const [error, setError] = useState(
-    "Failed to get a valid response from the server"
-  );
+  const [error, setError] = useState(null);
 
   const handleFirstFieldClick = (index) => {
     const newField = [...firstField];
@@ -88,7 +86,7 @@ function App() {
         }
       }
       if (response && response.status === 200) {
-        setResult(isTicketWon ? "Вы выиграли!" : "Вы проиграли!");
+        setResult(isTicketWon ? "Еее, вы выиграли!" : "Вы проиграли :(");
         setError(null);
       } else {
         setError("Не удалось получить корректный ответ от сервера.");
