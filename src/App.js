@@ -80,22 +80,10 @@ function App() {
     console.log("isTicketWon", isTicketWon);
 
     try {
-      let attempts = 0;
-      let response;
-      while (attempts < 3) {
-        try {
-          response = await axios.post("https://example.com/api/lottery", {
-            selectedNumber: selectedNumbers,
-            isTicketWon,
-          });
-          break;
-        } catch (err) {
-          attempts++;
-          if (attempts < 3) {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-          }
-        }
-      }
+      const response = await axios.post("https://example.com/api/lottery", {
+        selectedNumber: selectedNumbers,
+        isTicketWon,
+      });
       if (response && response.status === 200) {
         setResult(isTicketWon ? "You won!" : "You lost!");
         setError(null);
