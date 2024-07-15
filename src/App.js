@@ -41,6 +41,17 @@ function App() {
     return { firstSet, secondSet };
   };
 
+  const chooseRandomNumbers = () => {
+    const randomNumbers = getRandomNumbers();
+    const newFirstField = firstField.map((field, index) =>
+      randomNumbers.firstSet.includes(index + 1)
+    );
+    const newSecondField = [false, false];
+    newSecondField[randomNumbers.secondSet - 1] = true;
+    setFirstField(newFirstField);
+    setSecondField(newSecondField);
+  };
+
   const checkResult = (generated, selected) => {
     const firstMatchCount = selected.firstField.filter((num) =>
       generated.firstSet.includes(num)
@@ -97,7 +108,7 @@ function App() {
 
   return (
     <div className={styles.app}>
-      <div className={styles.wand}>
+      <div className={styles.wand} onClick={chooseRandomNumbers}>
         <RxMagicWand size={30} />
       </div>
       <div className={styles.field}>
